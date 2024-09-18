@@ -36,14 +36,19 @@ The CO2 Measurement Application is a robust Laravel-based API designed to collec
    cd co2
    ```
 
-2. Install Laravel Sail:
-   ```
-   composer require laravel/sail --dev
-   ```
-
-3. Create a copy of the `.env.example` file and name it `.env`:
+2. Create a copy of the `.env.example` file and name it `.env`:
    ```
    cp .env.example .env
+   ```
+
+3. Run the following command to download and install Laravel Sail:
+   ```
+   docker run --rm \
+       -u "$(id -u):$(id -g)" \
+       -v "$(pwd):/var/www/html" \
+       -w /var/www/html \
+       laravelsail/php82-composer:latest \
+       composer install --ignore-platform-reqs
    ```
 
 4. Build and start the Docker containers using Laravel Sail:
@@ -51,20 +56,17 @@ The CO2 Measurement Application is a robust Laravel-based API designed to collec
    ./vendor/bin/sail up -d
    ```
 
-5. Install PHP dependencies:
-   ```
-   ./vendor/bin/sail composer install
-   ```
-
-6. Generate an application key:
+5. Generate an application key:
    ```
    ./vendor/bin/sail artisan key:generate
    ```
 
-7. Run database migrations:
+6. Run database migrations:
    ```
    ./vendor/bin/sail artisan migrate
    ```
+
+Now your application is set up and ready to go! 🎉
 
 ## 🏃‍♂️ Running the Application
 
@@ -217,3 +219,168 @@ The API uses conventional HTTP response codes to indicate the success or failure
 ---
 
 🌟 Built with Laravel 11 and PHP 8.2 | Developed by Jonathan Pereira
+
+
+
+
+
+
+
+# 🌿 CO2 Measurement Application 🌡️
+
+## Table of Contents
+- [🎯 Description](#-description)
+- [✨ Features](#-features)
+- [🛠️ Requirements](#️-requirements)
+- [🚀 Installation](#-installation)
+- [🏃‍♂️ Running the Application](#️-running-the-application)
+- [🧪 Running Tests](#-running-tests)
+- [📚 API Documentation](#-api-documentation)
+- [🔧 Technology Stack](#-technology-stack)
+
+## 🎯 Description
+
+The CO2 Measurement Application is a robust Laravel-based API designed to collect and analyze CO2 measurements from hundreds of thousands of sensors. It provides real-time monitoring, alerting, and statistical analysis to ensure safe CO2 levels in various environments.
+
+## ✨ Features
+
+- 📡 Receive measurements from sensors at a rate of 1 per minute
+- 🚨 Automatic status updates (OK, WARN, ALERT) based on CO2 levels
+- 📊 Calculate and provide metrics (30-day average and maximum CO2 levels)
+- 🔔 Store and retrieve alerts for critical CO2 levels
+- 🚦 Intelligent state management for sensor status
+- 🔒 Rate limiting to ensure data integrity
+
+## 🛠️ Requirements
+
+- 🐳 Docker
+- 🐙 Docker Compose
+
+## 🚀 Installation
+
+1. Clone the repository:
+   ```
+   git clone https://github.com/jonathanpereira/co2.git
+   cd co2
+   ```
+
+2. Create a copy of the `.env.example` file and name it `.env`:
+   ```
+   cp .env.example .env
+   ```
+
+3. Run the following command to download and install Laravel Sail:
+   ```
+   docker run --rm \
+       -u "$(id -u):$(id -g)" \
+       -v "$(pwd):/var/www/html" \
+       -w /var/www/html \
+       laravelsail/php82-composer:latest \
+       composer install --ignore-platform-reqs
+   ```
+
+4. Build and start the Docker containers using Laravel Sail:
+   ```
+   ./vendor/bin/sail up -d
+   ```
+
+5. Generate an application key:
+   ```
+   ./vendor/bin/sail artisan key:generate
+   ```
+
+6. Run database migrations:
+   ```
+   ./vendor/bin/sail artisan migrate
+   ```
+
+Now your application is set up and ready to go! 🎉
+
+## 🏃‍♂️ Running the Application
+
+Start the application using Laravel Sail:
+
+```
+./vendor/bin/sail up -d
+```
+
+The API will be available at `http://localhost` 🌐
+
+To stop the application:
+
+```
+./vendor/bin/sail down
+```
+
+## 🧪 Running Tests
+
+To run the application tests:
+
+```
+./vendor/bin/sail test
+```
+
+## 📚 API Documentation
+
+### Base URL
+
+All URLs referenced in the documentation have the following base:
+
+```
+http://localhost/api/v1
+```
+
+### Endpoints
+
+#### 🩺 Health Check
+
+```
+GET /sensors/health
+```
+
+#### 📝 Store Measurement
+
+```
+POST /sensors/{uuid}/measurements
+```
+
+#### 🔍 Get Sensor Status
+
+```
+GET /sensors/{uuid}
+```
+
+#### 📊 Get Sensor Metrics
+
+```
+GET /sensors/{uuid}/metrics
+```
+
+#### 🚨 Get Sensor Alerts
+
+```
+GET /sensors/{uuid}/alerts
+```
+
+For detailed information on request/response formats, please refer to the [API Documentation](#-api-documentation) section.
+
+### 🛑 Error Responses
+
+The API uses conventional HTTP response codes to indicate the success or failure of an API request.
+
+### ⏱️ Rate Limiting
+
+- Measurements: 1 request per minute per sensor
+- Other endpoints: 100 requests per minute per IP address, 1000 requests per hour per IP address
+
+## 🔧 Technology Stack
+
+- 💻 PHP 8.2
+- 🚀 Laravel 11
+- 🐳 Docker & Laravel Sail
+- 🗃️ MySQL Database
+- 🧪 PHPUnit for testing
+
+---
+
+🌟 Developed with ❤️ by Jonathan Pereira
