@@ -77,7 +77,7 @@ class SensorController extends Controller
 
         return $status ?
             response()->json(['status' => $status]) :
-            response()->json(['message' => 'Sensor not found'], Response::HTTP_NOT_FOUND);
+            response()->json(['message' => 'Sensor not found or not enough data'], Response::HTTP_NOT_FOUND);
     }
 
     public function metrics(SensorRequest $request): JsonResponse
@@ -87,7 +87,7 @@ class SensorController extends Controller
 
         return $metrics ?
             response()->json($metrics) :
-            response()->json(['message' => 'Sensor not found'], Response::HTTP_NOT_FOUND);
+            response()->json(['message' => 'Sensor not found or not enough data'], Response::HTTP_NOT_FOUND);
     }
 
     public function alerts(SensorRequest $request): JsonResponse
