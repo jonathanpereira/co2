@@ -176,6 +176,18 @@ Stores a new CO2 measurement for a specific sensor. Rate-limited to one per minu
 - 422 Unprocessable Entity: Validation errors
 - 429 Too Many Requests: Rate limit exceeded
 
+**Example**
+```
+curl  -X POST \
+  'http://localhost/api/v1/sensors/ac3e3b69-8f84-45e8-88df-9223a98d6922/measurements' \
+  --header 'Accept: /' \  
+  --header 'Content-Type: application/json' \
+  --data-raw '{
+  "co2": 2000,
+  "time": "2024-09-18T10:00:00+00:00"
+}'
+``` 
+
 #### 🔍 Get Sensor Status
 
 ```
