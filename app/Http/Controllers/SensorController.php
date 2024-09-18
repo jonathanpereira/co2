@@ -99,6 +99,6 @@ class SensorController extends Controller
 
         return $alerts ?
             response()->json($alerts) :
-            response()->json(['message' => 'Sensor not found'], Response::HTTP_NOT_FOUND);
+            response()->json(['message' => 'No alerts for the given sensor'], Response::HTTP_NOT_FOUND);
     }
 }
