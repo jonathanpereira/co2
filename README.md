@@ -120,6 +120,10 @@ Checks the health status of the API.
 }
 ```
 
+**Response Codes:**
+- 200 OK: The API is functioning correctly
+- 500 Internal Server Error: There's an issue with the API
+
 #### 📝 Store Measurement
 
 ```
@@ -137,6 +141,10 @@ Stores a new CO2 measurement for a specific sensor. Rate-limited to one per minu
 }
 ```
 
+**Validation:**
+- `co2`: Required, integer, minimum value of 0
+- `time`: Required, must be a valid date-time string in ISO 8601 format
+
 **Response**
 
 ```json
@@ -151,6 +159,12 @@ Stores a new CO2 measurement for a specific sensor. Rate-limited to one per minu
   }
 }
 ```
+
+**Response Codes:**
+- 201 Created: Measurement stored successfully
+- 400 Bad Request: Invalid input data
+- 422 Unprocessable Entity: Validation errors
+- 429 Too Many Requests: Rate limit exceeded
 
 #### 🔍 Get Sensor Status
 
@@ -168,6 +182,10 @@ Retrieves the current status of a specific sensor.
 }
 ```
 
+**Response Codes:**
+- 200 OK: Status retrieved successfully
+- 404 Not Found: Sensor not found
+
 #### 📊 Get Sensor Metrics
 
 ```
@@ -184,6 +202,10 @@ Retrieves metrics for a specific sensor.
   "avgLast30Days": 1250.5
 }
 ```
+
+**Response Codes:**
+- 200 OK: Metrics retrieved successfully
+- 404 Not Found: Sensor not found
 
 #### 🚨 Get Sensor Alerts
 
@@ -207,162 +229,9 @@ Retrieves alerts for a specific sensor.
 ]
 ```
 
-### 🛑 Error Responses
-
-The API uses conventional HTTP response codes to indicate the success or failure of an API request.
-
-### ⏱️ Rate Limiting
-
-- Measurements: 1 request per minute per sensor
-- Other endpoints: 100 requests per minute per IP address, 1000 requests per hour per IP address
-
----
-
-🌟 Built with Laravel 11 and PHP 8.2 | Developed by Jonathan Pereira
-
-
-
-
-
-
-
-# 🌿 CO2 Measurement Application 🌡️
-
-## Table of Contents
-- [🎯 Description](#-description)
-- [✨ Features](#-features)
-- [🛠️ Requirements](#️-requirements)
-- [🚀 Installation](#-installation)
-- [🏃‍♂️ Running the Application](#️-running-the-application)
-- [🧪 Running Tests](#-running-tests)
-- [📚 API Documentation](#-api-documentation)
-- [🔧 Technology Stack](#-technology-stack)
-
-## 🎯 Description
-
-The CO2 Measurement Application is a robust Laravel-based API designed to collect and analyze CO2 measurements from hundreds of thousands of sensors. It provides real-time monitoring, alerting, and statistical analysis to ensure safe CO2 levels in various environments.
-
-## ✨ Features
-
-- 📡 Receive measurements from sensors at a rate of 1 per minute
-- 🚨 Automatic status updates (OK, WARN, ALERT) based on CO2 levels
-- 📊 Calculate and provide metrics (30-day average and maximum CO2 levels)
-- 🔔 Store and retrieve alerts for critical CO2 levels
-- 🚦 Intelligent state management for sensor status
-- 🔒 Rate limiting to ensure data integrity
-
-## 🛠️ Requirements
-
-- 🐳 Docker
-- 🐙 Docker Compose
-
-## 🚀 Installation
-
-1. Clone the repository:
-   ```
-   git clone https://github.com/jonathanpereira/co2.git
-   cd co2
-   ```
-
-2. Create a copy of the `.env.example` file and name it `.env`:
-   ```
-   cp .env.example .env
-   ```
-
-3. Run the following command to download and install Laravel Sail:
-   ```
-   docker run --rm \
-       -u "$(id -u):$(id -g)" \
-       -v "$(pwd):/var/www/html" \
-       -w /var/www/html \
-       laravelsail/php82-composer:latest \
-       composer install --ignore-platform-reqs
-   ```
-
-4. Build and start the Docker containers using Laravel Sail:
-   ```
-   ./vendor/bin/sail up -d
-   ```
-
-5. Generate an application key:
-   ```
-   ./vendor/bin/sail artisan key:generate
-   ```
-
-6. Run database migrations:
-   ```
-   ./vendor/bin/sail artisan migrate
-   ```
-
-Now your application is set up and ready to go! 🎉
-
-## 🏃‍♂️ Running the Application
-
-Start the application using Laravel Sail:
-
-```
-./vendor/bin/sail up -d
-```
-
-The API will be available at `http://localhost` 🌐
-
-To stop the application:
-
-```
-./vendor/bin/sail down
-```
-
-## 🧪 Running Tests
-
-To run the application tests:
-
-```
-./vendor/bin/sail test
-```
-
-## 📚 API Documentation
-
-### Base URL
-
-All URLs referenced in the documentation have the following base:
-
-```
-http://localhost/api/v1
-```
-
-### Endpoints
-
-#### 🩺 Health Check
-
-```
-GET /sensors/health
-```
-
-#### 📝 Store Measurement
-
-```
-POST /sensors/{uuid}/measurements
-```
-
-#### 🔍 Get Sensor Status
-
-```
-GET /sensors/{uuid}
-```
-
-#### 📊 Get Sensor Metrics
-
-```
-GET /sensors/{uuid}/metrics
-```
-
-#### 🚨 Get Sensor Alerts
-
-```
-GET /sensors/{uuid}/alerts
-```
-
-For detailed information on request/response formats, please refer to the [API Documentation](#-api-documentation) section.
+**Response Codes:**
+- 200 OK: Alerts retrieved successfully
+- 404 Not Found: Sensor not found
 
 ### 🛑 Error Responses
 
@@ -383,4 +252,4 @@ The API uses conventional HTTP response codes to indicate the success or failure
 
 ---
 
-🌟 Developed with ❤️ by Jonathan Pereira
+🌟 Built with Laravel 11 and PHP 8.2 | Developed by Jonathan Pereira
