@@ -1,0 +1,263 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "CO2 Measurement Application API",
+        "description": "API for collecting and analyzing CO2 measurements from sensors",
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "http://localhost/api/v1"
+        }
+    ],
+    "paths": {
+        "/sensors/health": {
+            "get": {
+                "summary": "Check API health",
+                "responses": {
+                    "200": {
+                        "description": "API is healthy",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "ok"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/sensors/{uuid}/measurements": {
+            "post": {
+                "summary": "Store a new CO2 measurement",
+                "parameters": [
+                    {
+                        "name": "uuid",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid",
+                            "example": "3c6f1bd0-ba0f-4ac4-83be-85b3becff35d"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "co2": {
+                                        "type": "integer",
+                                        "minimum": 0,
+                                        "example": 1300
+                                    },
+                                    "time": {
+                                        "type": "string",
+                                        "format": "date-time",
+                                        "example": "2019-04-01T18:55:47+00:00"
+                                    }
+                                },
+                                "required": ["co2", "time"]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Measurement stored successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer"
+                                                },
+                                                "sensor": {
+                                                    "type": "string",
+                                                    "format": "uuid"
+                                                },
+                                                "co2": {
+                                                    "type": "integer"
+                                                },
+                                                "time": {
+                                                    "type": "string",
+                                                    "format": "date-time"
+                                                },
+                                                "status": {
+                                                    "type": "string",
+                                                    "enum": ["OK", "WARN", "ALERT"]
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    },
+                    "429": {
+                        "description": "Rate limit exceeded"
+                    }
+                }
+            }
+        },
+        "/sensors/{uuid}": {
+            "get": {
+                "summary": "Get sensor status",
+                "parameters": [
+                    {
+                        "name": "uuid",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        },
+                        "example": "3c6f1bd0-ba0f-4ac4-83be-85b3becff35d"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Sensor status retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "enum": ["OK", "WARN", "ALERT"]
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Sensor not found or not enough data"
+                    }
+                }
+            }
+        },
+        "/sensors/{uuid}/metrics": {
+            "get": {
+                "summary": "Get sensor metrics",
+                "parameters": [
+                    {
+                        "name": "uuid",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        },
+                        "example": "3c6f1bd0-ba0f-4ac4-83be-85b3becff35d"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Sensor metrics retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "maxLast30Days": {
+                                            "type": "integer"
+                                        },
+                                        "avgLast30Days": {
+                                            "type": "number",
+                                            "format": "float"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Sensor not found or not enough data"
+                    }
+                }
+            }
+        },
+        "/sensors/{uuid}/alerts": {
+            "get": {
+                "summary": "Get sensor alerts",
+                "parameters": [
+                    {
+                        "name": "uuid",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        },
+                        "example": "3c6f1bd0-ba0f-4ac4-83be-85b3becff35d"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Sensor alerts retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object",
+                                        "properties": {
+                                            "startTime": {
+                                                "type": "string",
+                                                "format": "date-time"
+                                            },
+                                            "endTime": {
+                                                "type": "string",
+                                                "format": "date-time"
+                                            },
+                                            "measurement1": {
+                                                "type": "integer"
+                                            },
+                                            "measurement2": {
+                                                "type": "integer"
+                                            },
+                                            "measurement3": {
+                                                "type": "integer"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "No alerts for the given sensor"
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {}
+    }
+}

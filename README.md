@@ -104,6 +104,15 @@ To run the application tests:
 
 ## 📚 API Documentation
 
+This project includes an OpenAPI (formerly Swagger) specification file `openapi.json` in the root directory. This file provides a detailed description of the API endpoints, request/response structures, and other important details.
+
+You can use this file with various tools:
+- To generate interactive API documentation (e.g., using Swagger UI)
+- To import into API testing tools like Postman
+- To generate client SDKs in various programming languages
+
+For a quick view of the API documentation, you can copy the contents of `openapi.json` and paste them into the [Swagger Editor](https://editor.swagger.io/).
+
 ### Base URL
 
 All URLs referenced in the documentation have the following base:
@@ -254,6 +263,19 @@ Retrieves alerts for a specific sensor.
 **Response Codes:**
 - 200 OK: Alerts retrieved successfully
 - 404 Not Found: Sensor not found
+
+### 🌐 Accessing Swagger Documentation
+
+To view the interactive API documentation:
+
+1. Ensure your application is running locally.
+2. Open your web browser and navigate to:
+
+   ```
+   http://localhost/swagger
+   ```
+
+3. You'll see the Swagger UI, which provides a comprehensive and interactive view of all API endpoints.
 
 ### 🛑 Error Responses
 
