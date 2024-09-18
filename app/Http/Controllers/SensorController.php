@@ -56,7 +56,7 @@ class SensorController extends Controller
                 $validatedData['time']
             );
 
-            $status = $this->sensorStatusCalculator->calculateStatus($sensor, $currentStatus ?? 'OK');
+            $status = $this->sensorStatusCalculator->calculateStatus($sensor, $currentStatus);
             $measurement->update(['status' => $status]);
 
             return response()->json([
