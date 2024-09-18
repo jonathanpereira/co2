@@ -1,6 +1,6 @@
 <?php
 
-namespace Feature\Http\Controllers;
+namespace Tests\Feature\Http\Controllers;
 
 use App\Models\Alert;
 use App\Models\Measurement;
@@ -79,7 +79,7 @@ class SensorControllerTest extends TestCase
         $response = $this->getJson('/api/v1/sensors/' . $sensor);
 
         $response->assertStatus(404)
-            ->assertJson(['message' => 'Sensor not found']);
+            ->assertJson(['message' => 'Sensor not found or not enough data']);
     }
 
     public function test_invalid_sensor_uuid()
