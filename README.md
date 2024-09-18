@@ -41,7 +41,17 @@ The CO2 Measurement Application is a robust Laravel-based API designed to collec
    cp .env.example .env
    ```
 
-3. Run the following command to download and install Laravel Sail:
+3. Update the following database configuration in the `.env` file:
+   ```
+   DB_CONNECTION=mysql
+   DB_HOST=mysql
+   DB_PORT=3306
+   DB_DATABASE=laravel
+   DB_USERNAME=sail
+   DB_PASSWORD=password
+   ```
+
+4. Run the following command to download and install Laravel Sail:
    ```
    docker run --rm \
        -u "$(id -u):$(id -g)" \
@@ -51,17 +61,17 @@ The CO2 Measurement Application is a robust Laravel-based API designed to collec
        composer install --ignore-platform-reqs
    ```
 
-4. Build and start the Docker containers using Laravel Sail:
+5. Build and start the Docker containers using Laravel Sail:
    ```
    ./vendor/bin/sail up -d
    ```
 
-5. Generate an application key:
+6. Generate an application key:
    ```
    ./vendor/bin/sail artisan key:generate
    ```
 
-6. Run database migrations:
+7. Run database migrations:
    ```
    ./vendor/bin/sail artisan migrate
    ```
