@@ -1,29 +1,39 @@
-# Sensor Measurement Application
+# 🌿 CO2 Measurement Application 🌡️
 
 ## Table of Contents
-- [Description](#description)
-- [Requirements](#requirements)
-- [Installation](#installation)
-- [Running the Application](#running-the-application)
-- [Running Tests](#running-tests)
-- [API Documentation](#api-documentation)
+- [🎯 Description](#-description)
+- [✨ Features](#-features)
+- [🛠️ Requirements](#️-requirements)
+- [🚀 Installation](#-installation)
+- [🏃‍♂️ Running the Application](#️-running-the-application)
+- [🧪 Running Tests](#-running-tests)
+- [📚 API Documentation](#-api-documentation)
 
-## Description
+## 🎯 Description
 
-The Sensor Measurement Application is a Laravel-based API that allows storing and retrieving CO2 measurements from sensors. It provides endpoints for storing measurements, retrieving sensor status, metrics, and alerts.
+The CO2 Measurement Application is a robust Laravel-based API designed to collect and analyze CO2 measurements from hundreds of thousands of sensors. It provides real-time monitoring, alerting, and statistical analysis to ensure safe CO2 levels in various environments.
 
-## Requirements
+## ✨ Features
 
-- Docker
-- Docker Compose
-- Git
+- 📡 Receive measurements from sensors at a rate of 1 per minute
+- 🚨 Automatic status updates (OK, WARN, ALERT) based on CO2 levels
+- 📊 Calculate and provide metrics (30-day average and maximum CO2 levels)
+- 🔔 Store and retrieve alerts for critical CO2 levels
+- 🚦 Intelligent state management for sensor status
+- 🔒 Rate limiting to ensure data integrity
 
-## Installation
+## 🛠️ Requirements
+
+- 🐳 Docker
+- 🐙 Docker Compose
+- 🌳 Git
+
+## 🚀 Installation
 
 1. Clone the repository:
    ```
-   git clone https://github.com/yourusername/sensor-measurement-app.git
-   cd sensor-measurement-app
+   git clone https://github.com/jonathanpereira/co2.git
+   cd co2
    ```
 
 2. Install Laravel Sail:
@@ -36,37 +46,35 @@ The Sensor Measurement Application is a Laravel-based API that allows storing an
    cp .env.example .env
    ```
 
-4. Configure the `.env` file with your preferred settings. The defaults should work for a local setup.
-
-5. Build and start the Docker containers using Laravel Sail:
+4. Build and start the Docker containers using Laravel Sail:
    ```
    ./vendor/bin/sail up -d
    ```
 
-6. Install PHP dependencies:
+5. Install PHP dependencies:
    ```
    ./vendor/bin/sail composer install
    ```
 
-7. Generate an application key:
+6. Generate an application key:
    ```
    ./vendor/bin/sail artisan key:generate
    ```
 
-8. Run database migrations:
+7. Run database migrations:
    ```
    ./vendor/bin/sail artisan migrate
    ```
 
-## Running the Application
+## 🏃‍♂️ Running the Application
 
-Once installed, you can start the application using Laravel Sail:
+Start the application using Laravel Sail:
 
 ```
 ./vendor/bin/sail up -d
 ```
 
-The API will be available at `http://localhost` (or the port you've configured in your `.env` file).
+The API will be available at `http://localhost` 🌐
 
 To stop the application:
 
@@ -74,7 +82,7 @@ To stop the application:
 ./vendor/bin/sail down
 ```
 
-## Running Tests
+## 🧪 Running Tests
 
 To run the application tests:
 
@@ -82,7 +90,7 @@ To run the application tests:
 ./vendor/bin/sail test
 ```
 
-## API Documentation
+## 📚 API Documentation
 
 ### Base URL
 
@@ -94,7 +102,7 @@ http://localhost/api/v1
 
 ### Endpoints
 
-#### Health Check
+#### 🩺 Health Check
 
 ```
 GET /sensors/health
@@ -110,25 +118,19 @@ Checks the health status of the API.
 }
 ```
 
-#### Store Measurement
+#### 📝 Store Measurement
 
 ```
-POST /sensors/{sensor_uuid}/measurements
+POST /sensors/{uuid}/measurements
 ```
 
-Stores a new CO2 measurement for a specific sensor. Note that measurements are rate-limited to one per minute per sensor.
-
-**Parameters**
-
-| Name | Type | Description |
-|------|------|-------------|
-| sensor_uuid | string | The UUID of the sensor |
+Stores a new CO2 measurement for a specific sensor. Rate-limited to one per minute per sensor.
 
 **Request Body**
 
 ```json
 {
-  "co2": 1000,
+  "co2": 2000,
   "time": "2024-09-18T10:00:00+00:00"
 }
 ```
@@ -141,56 +143,36 @@ Stores a new CO2 measurement for a specific sensor. Note that measurements are r
   "data": {
     "id": 1,
     "sensor": "123e4567-e89b-12d3-a456-426614174000",
-    "co2": 1000,
+    "co2": 2000,
     "time": "2024-09-18T10:00:00+00:00",
-    "status": "OK"
+    "status": "WARN"
   }
 }
 ```
 
-**Error Response (Rate Limit Exceeded)**
-
-```json
-{
-  "error": "Rate limit exceeded. Only one measurement per minute is allowed."
-}
-```
-
-#### Get Sensor Status
+#### 🔍 Get Sensor Status
 
 ```
-GET /sensors/{sensor_uuid}
+GET /sensors/{uuid}
 ```
 
 Retrieves the current status of a specific sensor.
-
-**Parameters**
-
-| Name | Type | Description |
-|------|------|-------------|
-| sensor_uuid | string | The UUID of the sensor |
 
 **Response**
 
 ```json
 {
-  "status": "OK"
+  "status": "OK"  // Possible statuses: OK, WARN, ALERT
 }
 ```
 
-#### Get Sensor Metrics
+#### 📊 Get Sensor Metrics
 
 ```
-GET /sensors/{sensor_uuid}/metrics
+GET /sensors/{uuid}/metrics
 ```
 
 Retrieves metrics for a specific sensor.
-
-**Parameters**
-
-| Name | Type | Description |
-|------|------|-------------|
-| sensor_uuid | string | The UUID of the sensor |
 
 **Response**
 
@@ -201,19 +183,13 @@ Retrieves metrics for a specific sensor.
 }
 ```
 
-#### Get Sensor Alerts
+#### 🚨 Get Sensor Alerts
 
 ```
-GET /sensors/{sensor_uuid}/alerts
+GET /sensors/{uuid}/alerts
 ```
 
 Retrieves alerts for a specific sensor.
-
-**Parameters**
-
-| Name | Type | Description |
-|------|------|-------------|
-| sensor_uuid | string | The UUID of the sensor |
 
 **Response**
 
@@ -224,43 +200,20 @@ Retrieves alerts for a specific sensor.
     "endTime": "2024-09-15T15:00:00Z",
     "measurement1": 2100,
     "measurement2": 2200,
-    "measurement3": 2150
-  },
-  {
-    "startTime": "2024-09-17T09:00:00Z",
-    "endTime": null,
-    "measurement1": 2300,
-    "measurement2": 2250,
-    "measurement3": 2400
+    "measurement3": 2100
   }
 ]
 ```
 
-### Error Responses
+### 🛑 Error Responses
 
-The API uses conventional HTTP response codes to indicate the success or failure of an API request. In general:
+The API uses conventional HTTP response codes to indicate the success or failure of an API request.
 
-- 2xx range indicate success
-- 4xx range indicate an error that failed given the information provided (e.g., a required parameter was omitted, etc.)
-- 5xx range indicate an error with our servers
+### ⏱️ Rate Limiting
 
-### Example Error Response
-
-```json
-{
-  "error": "Invalid sensor UUID format"
-}
-```
-
-### Rate Limiting
-
-The API implements rate limiting to prevent abuse:
-
-- Measurements: 1 request per minute per sensor (implemented using Laravel's RateLimiter)
+- Measurements: 1 request per minute per sensor
 - Other endpoints: 100 requests per minute per IP address, 1000 requests per hour per IP address
 
-If you exceed these limits, you'll receive a 429 Too Many Requests response.
+---
 
-### Authentication
-
-Currently, this API does not require authentication. However, it's recommended to implement proper authentication and authorization mechanisms before deploying to a production environment.
+🌟 Built with Laravel 11 and PHP 8.2 | Developed by Jonathan Pereira
