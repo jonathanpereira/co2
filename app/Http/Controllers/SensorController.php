@@ -70,45 +70,6 @@ class SensorController extends Controller
         }
     }
 
-//    public function store(StoreMeasurementRequest $request): JsonResponse
-//    {
-//        $validatedData = $request->validated();
-//        $sensor = $validatedData['sensor'];
-//
-//
-//        $cacheKey = "sensor_measurement:{$sensor}";
-//        if (Cache::has($cacheKey)) {
-//            return response()->json([
-//                'error' => 'Rate limit exceeded. Only one measurement per minute is allowed.'
-//            ], Response::HTTP_TOO_MANY_REQUESTS);
-//        }
-//
-//        try {
-//            $currentStatus = $this->measurementRepository->getStatus($sensor);
-//
-//            $measurement = $this->measurementRepository->create(
-//                $sensor,
-//                $validatedData['co2'],
-//                $validatedData['time']
-//            );
-//
-//            $status = $this->sensorStatusCalculator->calculateStatus($sensor, $currentStatus);
-//            $measurement->update(['status' => $status]);
-//
-//            Cache::put($cacheKey, true, now()->addMinute());
-//
-//            return response()->json([
-//                'message' => 'Measurement stored successfully',
-//                'data' => $measurement
-//            ], Response::HTTP_CREATED);
-//        } catch (\Exception $exception) {
-//            return response()->json([
-//                'error' => $exception->getMessage()
-//            ], Response::HTTP_BAD_REQUEST);
-//        }
-//
-//    }
-
     public function status(SensorRequest $request): JsonResponse
     {
         $validatedData = $request->validated();
