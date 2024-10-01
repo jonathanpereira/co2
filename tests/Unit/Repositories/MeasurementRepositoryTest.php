@@ -43,7 +43,7 @@ class MeasurementRepositoryTest extends TestCase
         $this->assertEquals('OK', $status);
     }
 
-    public function test_get_metrics()
+    public function test_get_metrics_keys()
     {
         $sensor = '123e4567-e89b-12d3-a456-426614174000';
         Measurement::factory()->count(5)->create([
@@ -57,6 +57,28 @@ class MeasurementRepositoryTest extends TestCase
         $this->assertIsArray($metrics);
         $this->assertArrayHasKey('maxLast30Days', $metrics);
         $this->assertArrayHasKey('avgLast30Days', $metrics);
+    }
+
+    public function test_get_metrics_values()
+    {
+        $sensor = '123e4567-e89b-12d3-a456-426614174000';
+        $fifteenDaysAgo = now()->subDays(15);
+
+        $co2Values = [1000, 2000, 3000];
+
+        foreach ($co2Values as $co2) {
+            Measurement::factory()->create([
+                'sensor' => $sensor,
+                'co2' => $co2,
+                'created_at' => $fifteenDaysAgo
+            ]);
+        }
+
+        $metrics = $this->repository->getMetrics($sensor);
+
+        $this->assertIsArray($metrics);
+        $this->assertEquals(3000, $metrics['maxLast30Days']);
+        $this->assertEquals(2000, $metrics['avgLast30Days']);
     }
 
     public function test_get_3_latest_measurements()

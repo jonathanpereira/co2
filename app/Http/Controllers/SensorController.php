@@ -45,6 +45,7 @@ class SensorController extends Controller
         return $executed;
     }
 
+    // TODO: Move this into a service
     private function storeMeasurement(array $validatedData, string $sensor): JsonResponse
     {
         try {
@@ -90,10 +91,9 @@ class SensorController extends Controller
             response()->json(['message' => 'Sensor not found or not enough data'], Response::HTTP_NOT_FOUND);
     }
 
+    // TODO: it would be good to have a paginator here
     public function alerts(SensorRequest $request): JsonResponse
     {
-        // TODO: it would be good to have a paginator here
-
         $validatedData = $request->validated();
         $alerts = $this->alertRepository->getAlerts($validatedData['sensor']);
 
