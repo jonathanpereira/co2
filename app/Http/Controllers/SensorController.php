@@ -27,27 +27,6 @@ class SensorController extends Controller
         $validatedData = $request->validated();
         $sensor = $validatedData['sensor'];
 
-        // Check rate limit
-        $executed = RateLimiter::attempt(
-            'store-measurement:'.$sensor,
-            self::MAX_ATTEMPTS_PER_MINUTE,
-            function() use ($validatedData, $sensor) {
-                return $this->storeMeasurement($validatedData, $sensor);
-            }
-        );
-
-        if (!$executed) {
-            return response()->json([
-                'error' => 'Rate limit exceeded. Only one measurement per minute is allowed.'
-            ], Response::HTTP_TOO_MANY_REQUESTS);
-        }
-
-        return $executed;
-    }
-
-    // TODO: Move this into a service
-    private function storeMeasurement(array $validatedData, string $sensor): JsonResponse
-    {
         try {
             $currentStatus = $this->measurementRepository->getStatus($sensor);
 
