@@ -9,7 +9,6 @@ use App\Repositories\MeasurementRepository;
 use App\Services\SensorStatusCalculator;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
-use Illuminate\Support\Facades\RateLimiter;
 
 class SensorController extends Controller
 {
