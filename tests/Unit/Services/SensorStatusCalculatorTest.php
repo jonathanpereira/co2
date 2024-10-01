@@ -31,32 +31,32 @@ class SensorStatusCalculatorTest extends TestCase
     }
 
     #[DataProvider('lessThan3MeasurementsProvider')]
-    public function testLessThan3Measurements(array $measurements, string $expectedStatus): void
+    public function test_less_than_3_measurements(array $measurements, string $expectedStatus): void
     {
         $this->measurementRepository->shouldReceive('get3LatestMeasurements')
             ->once()
             ->andReturn(new Collection($measurements));
 
-        $status = $this->calculator->calculateStatus('sensor1', 'OK');
+        $status = $this->calculator->calculateStatus('sensor1', SensorStatusCalculator::STATUS_OK);
         $this->assertSame($expectedStatus, $status);
     }
 
     public static function lessThan3MeasurementsProvider(): array
     {
         return [
-            'Below threshold' => [[1500], 'OK'],
-            'Above threshold' => [[2500], 'WARN'],
+            'Below threshold' => [[1500], SensorStatusCalculator::STATUS_OK],
+            'Above threshold' => [[2500], SensorStatusCalculator::STATUS_WARN],
         ];
     }
 
     #[DataProvider('allMeasurementsBelowThresholdProvider')]
-    public function testAllMeasurementsBelowThreshold(string $currentStatus, string $expectedStatus): void
+    public function test_all_measurements_below_threshold(string $currentStatus, string $expectedStatus): void
     {
         $this->measurementRepository->shouldReceive('get3LatestMeasurements')
             ->once()
             ->andReturn(new Collection([1500, 1600, 1700]));
 
-        if ($currentStatus === 'ALERT') {
+        if ($currentStatus === SensorStatusCalculator::STATUS_ALERT) {
             $this->alertRepository->shouldReceive('endAlert')
                 ->once()
                 ->with('sensor1');
@@ -69,12 +69,12 @@ class SensorStatusCalculatorTest extends TestCase
     public static function allMeasurementsBelowThresholdProvider(): array
     {
         return [
-            'From OK status' => ['OK', 'OK'],
-            'From ALERT status' => ['ALERT', 'OK'],
+            'From OK status' => [SensorStatusCalculator::STATUS_OK, SensorStatusCalculator::STATUS_OK],
+            'From ALERT status' => [SensorStatusCalculator::STATUS_ALERT, SensorStatusCalculator::STATUS_OK],
         ];
     }
 
-    public function testAllMeasurementsAboveThresholdFromOkStatus(): void
+    public function test_all_measurements_above_threshold_from_ok_status(): void
     {
         $this->measurementRepository->shouldReceive('get3LatestMeasurements')
             ->once()
@@ -84,36 +84,36 @@ class SensorStatusCalculatorTest extends TestCase
             ->once()
             ->with('sensor1', Mockery::type(Collection::class));
 
-        $status = $this->calculator->calculateStatus('sensor1', 'OK');
-        $this->assertSame('ALERT', $status);
+        $status = $this->calculator->calculateStatus('sensor1', SensorStatusCalculator::STATUS_OK);
+        $this->assertSame(SensorStatusCalculator::STATUS_ALERT, $status);
     }
 
-    public function testSomeMeasurementsAboveThresholdFromAlertStatus(): void
+    public function test_some_measurements_above_threshold_from_alert_status(): void
     {
         $this->measurementRepository->shouldReceive('get3LatestMeasurements')
             ->once()
             ->andReturn(new Collection([2500, 1600, 2700]));
 
-        $status = $this->calculator->calculateStatus('sensor1', 'ALERT');
-        $this->assertSame('ALERT', $status);
+        $status = $this->calculator->calculateStatus('sensor1', SensorStatusCalculator::STATUS_ALERT);
+        $this->assertSame(SensorStatusCalculator::STATUS_ALERT, $status);
     }
 
     #[DataProvider('latestMeasurementProvider')]
-    public function testLatestMeasurementThreshold(int $latestMeasurement, string $expectedStatus): void
+    public function test_latest_measurement_threshold(int $latestMeasurement, string $expectedStatus): void
     {
         $this->measurementRepository->shouldReceive('get3LatestMeasurements')
             ->once()
             ->andReturn(new Collection([$latestMeasurement, 1600, 1700]));
 
-        $status = $this->calculator->calculateStatus('sensor1', 'OK');
+        $status = $this->calculator->calculateStatus('sensor1', SensorStatusCalculator::STATUS_OK);
         $this->assertSame($expectedStatus, $status);
     }
 
     public static function latestMeasurementProvider(): array
     {
         return [
-            'Above threshold' => [2500, 'WARN'],
-            'Below threshold' => [1500, 'OK'],
+            'Above threshold' => [2500, SensorStatusCalculator::STATUS_WARN],
+            'Below threshold' => [1500, SensorStatusCalculator::STATUS_OK],
         ];
     }
 }

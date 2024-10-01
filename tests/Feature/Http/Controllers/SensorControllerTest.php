@@ -111,10 +111,10 @@ class SensorControllerTest extends TestCase
                 'error' => 'Rate limit exceeded. Only one measurement per minute is allowed.'
             ]);
 
-        // Clear the rate limiter
-        RateLimiter::clear('store-measurement:' . $data['sensor']);
+        // Travel in time
+        $this->travel(1)->minutes();
 
-        // After clearing rate limiter, another request should succeed
+        // After travelling, another request should succeed
         $response = $this->postJson('/api/v1/sensors/' . $data['sensor'] . '/measurements', $data);
         $response->assertStatus(201);
     }

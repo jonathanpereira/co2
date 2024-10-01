@@ -9,7 +9,10 @@ Route::prefix('/v1/sensors')->group(function () {
         return new JsonResponse(['status' => 'ok']);
     });
 
-    Route::post('/{sensor}/measurements', [SensorController::class, 'store']);
+    Route::middleware(['throttle:sensor_measurements'])->group(function () {
+        Route::post('/{sensor}/measurements', [SensorController::class, 'store']);
+    });
+
     Route::get('/{sensor}', [SensorController::class, 'status']);
     Route::get('/{sensor}/metrics', [SensorController::class, 'metrics']);
     Route::get('/{sensor}/alerts', [SensorController::class, 'alerts']);

@@ -9,7 +9,6 @@ use App\Repositories\MeasurementRepository;
 use App\Services\SensorStatusCalculator;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
-use Illuminate\Support\Facades\RateLimiter;
 
 class SensorController extends Controller
 {
@@ -27,26 +26,6 @@ class SensorController extends Controller
         $validatedData = $request->validated();
         $sensor = $validatedData['sensor'];
 
-        // Check rate limit
-        $executed = RateLimiter::attempt(
-            'store-measurement:'.$sensor,
-            self::MAX_ATTEMPTS_PER_MINUTE,
-            function() use ($validatedData, $sensor) {
-                return $this->storeMeasurement($validatedData, $sensor);
-            }
-        );
-
-        if (!$executed) {
-            return response()->json([
-                'error' => 'Rate limit exceeded. Only one measurement per minute is allowed.'
-            ], Response::HTTP_TOO_MANY_REQUESTS);
-        }
-
-        return $executed;
-    }
-
-    private function storeMeasurement(array $validatedData, string $sensor): JsonResponse
-    {
         try {
             $currentStatus = $this->measurementRepository->getStatus($sensor);
 
@@ -90,10 +69,9 @@ class SensorController extends Controller
             response()->json(['message' => 'Sensor not found or not enough data'], Response::HTTP_NOT_FOUND);
     }
 
+    // TODO: it would be good to have a paginator here
     public function alerts(SensorRequest $request): JsonResponse
     {
-        // TODO: it would be good to have a paginator here
-
         $validatedData = $request->validated();
         $alerts = $this->alertRepository->getAlerts($validatedData['sensor']);
 
